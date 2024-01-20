@@ -1,8 +1,10 @@
 from django.db import models
 from datetime import date
+from django.contrib.auth.models import User
 
 # Create your models here.
 class Restaurant(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     name = models.CharField(max_length=200)
     address = models.CharField(max_length=200)
     concept = models.TextField()
