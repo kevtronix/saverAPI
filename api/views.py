@@ -17,7 +17,7 @@ class RestaurantViewSet(viewsets.ModelViewSet):
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
-    permission_classes = [IsAuthenticated, IsSuperUser]
+    permission_classes = [IsAuthenticated]
 
 
 class UserRestaurantsViewSet(viewsets.ReadOnlyModelViewSet):
