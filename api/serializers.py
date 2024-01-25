@@ -29,6 +29,17 @@ class RestaurantSerializer(serializers.ModelSerializer):
         return restaurant
 
 class TicketSerializer(serializers.ModelSerializer):
+    restaurant = RestaurantSerializer(read_only=True)
+    
     class Meta:
         model = Ticket
         fields = ['id', 'restaurant', 'food_category', 'expiration_date', 'checked']
+
+    def create(self, validated_data):
+        # Extract the restaurant ID from the incoming data
+        restaurant_id = self.context['request'].data.get('restaurant')
+        # Find the restaurant instance associated with the provided ID
+        restaurant = Restaurant.objects.get(id=restaurant_id)
+        # Create a new Ticket instance
+        ticket = Ticket.objects.create(restaurant=restaurant, **validated_data)
+        return ticket
