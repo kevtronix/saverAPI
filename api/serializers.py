@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Restaurant, Ticket
+from .models import Restaurant, Ticket, FoodInspector, Volunteer
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -33,7 +33,7 @@ class TicketSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Ticket
-        fields = ['id', 'restaurant', 'food_category', 'expiration_date', 'checked']
+        fields = ['id', 'restaurant', 'food_category', 'quantity', 'expiration_date', 'checked']
 
     def create(self, validated_data):
         # Extract the restaurant ID from the incoming data
@@ -43,3 +43,31 @@ class TicketSerializer(serializers.ModelSerializer):
         # Create a new Ticket instance
         ticket = Ticket.objects.create(restaurant=restaurant, **validated_data)
         return ticket
+
+
+
+class FoodInspectorSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=True)
+    
+    class Meta:
+        model = FoodInspector
+        fields = '__all__' 
+
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        user = UserSerializer.create(UserSerializer(), validated_data=user_data)
+        food_inspector = FoodInspector.objects.create(user=user, **validated_data)
+        return food_inspector
+
+class VolunteerSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=True)
+    
+    class Meta:
+        model = Volunteer
+        fields = ['id', 'user', 'first_name', 'last_name', 'phone_number', 'email']
+    
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        user = UserSerializer.create(UserSerializer(), validated_data=user_data)
+        volunteer = Volunteer.objects.create(user=user, **validated_data)
+        return volunteer

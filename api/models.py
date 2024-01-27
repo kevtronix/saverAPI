@@ -25,6 +25,9 @@ class Ticket(models.Model):
     # Type of food 
     food_category = models.IntegerField(choices=FOOD_CATEGORY_CHOICES, default=0)
 
+    # Quantity of food
+    quantity = models.IntegerField(default=0)
+
     # Expiration date of the food 
     expiration_date = models.DateField(default=date.today)
 
@@ -38,4 +41,40 @@ class Ticket(models.Model):
     # Method to check fi the food is expired 
     def is_expired(self):
         return self.expiration_date < date.today()
+
+
+
+class FoodInspector(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    phone_number = models.CharField(max_length=200)
+    email = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
     
+    def check_ticket(self, ticket_id):
+        try:
+            ticket = Ticket.objects.get(id=ticket_id)
+            ticket.checked = True
+            ticket.save()
+            return True
+        except:
+            return False
+    
+    def list_unchecked_tickets(self):
+        return Ticket.objects.filter(checked=False)
+
+
+class Volunteer(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    phone_number = models.CharField(max_length=200)
+    email = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
