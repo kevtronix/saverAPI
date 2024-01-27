@@ -20,7 +20,7 @@ class RestaurantSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Restaurant
-        fields = ['id', 'user', 'name', 'address', 'concept']
+        fields = '__all__'
     
     def create(self, validated_data):
         user_data = validated_data.pop('user')
