@@ -53,6 +53,21 @@ class TicketViewSet(viewsets.ModelViewSet):
             return Response({'status': 'Ticket checked'})
         except:
             return Response({'status': 'Ticket not found'})
+    
+    # Adjust quantity of food
+    @action(detail=True, methods=['post'])
+    def adjust_quantity(self, request, pk=None):
+        try:
+            ticket = Ticket.objects.get(id=pk)
+            quantity = request.data.get('quantity')
+            ticket.quantity = quantity
+            if quantity == 0:
+                ticket.delete()
+            else: 
+                ticket.save()
+            return Response({'status': 'Quantity adjusted'})
+        except:
+            return Response({'status': 'Ticket not found'})
 
 
 class UserRestaurantsViewSet(viewsets.ReadOnlyModelViewSet):
