@@ -1,6 +1,6 @@
 from django.contrib.auth.models import User
 from rest_framework import serializers
-from .models import Restaurant, Ticket, FoodInspector, Volunteer
+from .models import Restaurant, Ticket, FoodInspector, Volunteer, Shelter, ShelterRequest
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -71,3 +71,32 @@ class VolunteerSerializer(serializers.ModelSerializer):
         user = UserSerializer.create(UserSerializer(), validated_data=user_data)
         volunteer = Volunteer.objects.create(user=user, **validated_data)
         return volunteer
+
+class ShelterSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Shelter
+        fields = '__all__'
+
+    def create(self, validated_data):
+        user_data = validated_data.pop('user')
+        user = UserSerializer.create(UserSerializer(), validated_data=user_data)
+        shelter = Shelter.objects.create(user=user, **validated_data)
+        return shelter
+
+
+class ShelterRequestSerializer(serializers.ModelSerializer):
+    tickets = TicketSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = ShelterRequest
+        fields = '__all__'
+    
+
+    def create(self, validated_data):
+        # Extract the shelter ID from the incoming data
+        shelter_id = self.context['request'].data.get('shelter')
+        # Find the shelter instance associated with the provided ID
+        shelter = Shelter.objects.get(id=shelter_id)
+        # Create a new ShelterRequest instance
+        shelter_request = ShelterRequest.objects.create(shelter=shelter, **validated_data)
+        return shelter_request

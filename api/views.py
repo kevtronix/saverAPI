@@ -2,10 +2,11 @@ from rest_framework.decorators import action
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Restaurant, Ticket, FoodInspector, Volunteer
-from .serializers import RestaurantSerializer, TicketSerializer, FoodInspectorSerializer, VolunteerSerializer
+from .models import Restaurant, Ticket, FoodInspector, Volunteer, Shelter
+from .serializers import RestaurantSerializer, TicketSerializer, FoodInspectorSerializer, VolunteerSerializer, ShelterSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
+from .matching import match_checked_tickets_with_requests
 
 class IsSuperUser(permissions.BasePermission):
     def has_permission(self, request, view):
@@ -75,6 +76,12 @@ class TicketViewSet(viewsets.ModelViewSet):
             return Response({'status': 'Quantity adjusted'})
         except:
             return Response({'status': 'Ticket not found'})
+    
+    # Match Tickets with Shelter Requests
+    @action(detail=False, methods=['post'])
+    def match_tickets(self, request):
+        match_checked_tickets_with_requests()
+        return Response({'status': 'Tickets matched with requests'})
 
 
 class UserRestaurantsViewSet(viewsets.ReadOnlyModelViewSet):
@@ -93,3 +100,7 @@ class FoodInspectorViewSet(viewsets.ModelViewSet):
 class VolunteerViewSet(viewsets.ModelViewSet):
     queryset = Volunteer.objects.all()
     serializer_class = VolunteerSerializer
+
+class ShelterViewSet(viewsets.ModelViewSet):
+    queryset = Shelter.objects.all()
+    serializer_class = ShelterSerializer

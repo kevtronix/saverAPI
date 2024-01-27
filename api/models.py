@@ -6,6 +6,8 @@ from django.contrib.auth.models import User
 class Restaurant(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     name = models.CharField(max_length=200)
+    email = models.CharField(max_length=200)
+    phone_number = models.CharField(max_length=200)
     address = models.CharField(max_length=200)
     concept = models.TextField()
     
@@ -78,3 +80,33 @@ class Volunteer(models.Model):
         return self.name
 
 
+
+class Shelter(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
+    name = models.CharField(max_length=200)
+    address = models.CharField(max_length=200)
+    phone_number = models.CharField(max_length=200)
+    email = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
+
+
+class ShelterRequest(models.Model):
+  # Food Category Choices 
+    FOOD_CATEGORY_CHOICES = [
+        (0, 'Meats'),
+        (1, 'Vegetables'),
+        (2, 'Non-Perishables'),
+    ]
+    shelter = models.ForeignKey(Shelter, on_delete=models.CASCADE)
+    tickets = models.ManyToManyField(Ticket)
+    quantiy_requested = models.IntegerField()
+    fufilled = models.BooleanField(default=False)
+  
+
+    def __str__(self):
+        return self.shelter.name + " " + self.ticket.restaurant.name + " " + self.ticket.get_food_category_display() + " " + self.ticket.expiration_date.strftime("%m/%d/%Y") + " " + str(self.ticket.checked)
+
+
+    
