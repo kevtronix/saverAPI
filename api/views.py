@@ -34,6 +34,13 @@ class TicketViewSet(viewsets.ModelViewSet):
         checked_tickets = Ticket.objects.filter(checked=True)
         serializer = TicketSerializer(checked_tickets, many=True)
         return Response(serializer.data)
+    
+    # Show all expired tickets 
+    @action(detail=False, methods=['get'])
+    def list_expired_tickets(self, request):
+        expired_tickets = Ticket.objects.filter(expiration_date__lt=date.today())
+        serializer = TicketSerializer(expired_tickets, many=True)
+        return Response(serializer.data)
 
     @action(detail=False, methods=['post'])
     # Delete expired tickets
