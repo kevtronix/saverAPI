@@ -33,7 +33,7 @@ class TicketSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Ticket
-        fields = ['id', 'restaurant', 'food_category', 'quantity', 'expiration_date', 'checked']
+        fields = '__all__' 
 
     def create(self, validated_data):
         # Extract the restaurant ID from the incoming data

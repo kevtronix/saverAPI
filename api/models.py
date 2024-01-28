@@ -103,8 +103,8 @@ class ShelterRequest(models.Model):
     ]
     shelter = models.ForeignKey(Shelter, on_delete=models.CASCADE)
     tickets = models.ManyToManyField(Ticket)
-    quantiy_requested = models.IntegerField()
-    fufilled = models.BooleanField(default=False)
+    quantity_requested = models.IntegerField()
+    fulfilled = models.BooleanField(default=False)
     food_category = models.IntegerField(choices=FOOD_CATEGORY_CHOICES, default=0)
   
 
