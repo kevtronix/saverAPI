@@ -36,6 +36,8 @@ class Ticket(models.Model):
     # Indicate if the food has been checked
     checked = models.BooleanField(default=False)
 
+    
+
     def __str__(self):
         return self.restaurant.name + " " + self.get_food_category_display() + " " + self.expiration_date.strftime("%m/%d/%Y") + " " + str(self.checked)
     
@@ -103,6 +105,7 @@ class ShelterRequest(models.Model):
     tickets = models.ManyToManyField(Ticket)
     quantiy_requested = models.IntegerField()
     fufilled = models.BooleanField(default=False)
+    food_category = models.IntegerField(choices=FOOD_CATEGORY_CHOICES, default=0)
   
 
     def __str__(self):

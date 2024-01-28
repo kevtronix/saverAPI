@@ -2,8 +2,8 @@ from rest_framework.decorators import action
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .models import Restaurant, Ticket, FoodInspector, Volunteer, Shelter
-from .serializers import RestaurantSerializer, TicketSerializer, FoodInspectorSerializer, VolunteerSerializer, ShelterSerializer
+from .models import Restaurant, Ticket, FoodInspector, Volunteer, Shelter, ShelterRequest
+from .serializers import RestaurantSerializer, TicketSerializer, FoodInspectorSerializer, VolunteerSerializer, ShelterSerializer, ShelterRequestSerializer
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from .matching import match_checked_tickets_with_requests
@@ -92,6 +92,15 @@ class UserRestaurantsViewSet(viewsets.ReadOnlyModelViewSet):
         user = self.request.user
         return Restaurant.objects.filter(user=user)
 
+
+class UserShelterViewSet(viewsets.ReadOnlyModelViewSet):
+    serializer_class = ShelterSerializer
+    permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        user = self.request.user
+        return Shelter.objects.filter(user=user)
+
 class FoodInspectorViewSet(viewsets.ModelViewSet):
     queryset = FoodInspector.objects.all()
     serializer_class = FoodInspectorSerializer
@@ -104,3 +113,7 @@ class VolunteerViewSet(viewsets.ModelViewSet):
 class ShelterViewSet(viewsets.ModelViewSet):
     queryset = Shelter.objects.all()
     serializer_class = ShelterSerializer
+
+class ShelterRequestViewSet(viewsets.ModelViewSet):
+    queryset = ShelterRequest.objects.all()
+    serializer_class = ShelterRequestSerializer

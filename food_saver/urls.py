@@ -1,6 +1,6 @@
 from django.urls import path, include
 from rest_framework.routers import DefaultRouter
-from api.views import RestaurantViewSet, TicketViewSet, UserRestaurantsViewSet, FoodInspectorViewSet, ShelterViewSet, VolunteerViewSet
+from api.views import RestaurantViewSet, TicketViewSet, UserRestaurantsViewSet, FoodInspectorViewSet, ShelterViewSet, ShelterRequestViewSet,  VolunteerViewSet, UserShelterViewSet
 from rest_framework.authtoken.views import obtain_auth_token
 
 
@@ -11,6 +11,8 @@ router.register(r'tickets', TicketViewSet)
 router.register(r'user-restaurants', UserRestaurantsViewSet, basename='user-restaurants')
 router.register(r'inspectors', FoodInspectorViewSet)
 router.register(r'shelters', ShelterViewSet)
+router.register(r'user-shelters', UserShelterViewSet, basename='user-shelters')
+router.register(r'shelter-requests', ShelterRequestViewSet, basename='shelter-requests')
 router.register(r'volunteers', VolunteerViewSet)
 
 urlpatterns = [

@@ -73,6 +73,8 @@ class VolunteerSerializer(serializers.ModelSerializer):
         return volunteer
 
 class ShelterSerializer(serializers.ModelSerializer):
+    user = UserSerializer(required=True)
+
     class Meta:
         model = Shelter
         fields = '__all__'
@@ -82,9 +84,11 @@ class ShelterSerializer(serializers.ModelSerializer):
         user = UserSerializer.create(UserSerializer(), validated_data=user_data)
         shelter = Shelter.objects.create(user=user, **validated_data)
         return shelter
+     
 
 
 class ShelterRequestSerializer(serializers.ModelSerializer):
+    shelter = ShelterSerializer(read_only=True)
     tickets = TicketSerializer(many=True, read_only=True)
 
     class Meta:
