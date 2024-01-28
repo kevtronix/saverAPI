@@ -117,3 +117,10 @@ class ShelterViewSet(viewsets.ModelViewSet):
 class ShelterRequestViewSet(viewsets.ModelViewSet):
     queryset = ShelterRequest.objects.all()
     serializer_class = ShelterRequestSerializer
+
+    # Show all not delivered requests
+    @action(detail=False, methods=['get'])
+    def list_not_delivered_requests(self, request):
+        not_delivered_requests = ShelterRequest.objects.filter(delivered=False, fulfilled=True)
+        serializer = ShelterRequestSerializer(not_delivered_requests, many=True)
+        return Response(serializer.data)

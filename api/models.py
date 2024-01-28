@@ -106,6 +106,7 @@ class ShelterRequest(models.Model):
     quantity_requested = models.IntegerField()
     fulfilled = models.BooleanField(default=False)
     food_category = models.IntegerField(choices=FOOD_CATEGORY_CHOICES, default=0)
+    delivered = models.BooleanField(default=False)
   
 
     def __str__(self):
