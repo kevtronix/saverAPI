@@ -114,6 +114,18 @@ class ShelterViewSet(viewsets.ModelViewSet):
     queryset = Shelter.objects.all()
     serializer_class = ShelterSerializer
 
+    @action(detail=False, methods=['get'])
+    def get_shelter(self, request):
+        user = request.user
+        try:
+            shelter = Shelter.objects.get(user=user)
+            serializer = ShelterSerializer(shelter)
+            return Response(serializer.data)
+        except Shelter.DoesNotExist:
+            return Response({"error": "Shelter not found"}, status=status.HTTP_404_NOT_FOUND)
+        except Shelter.MultipleObjectsReturned:
+            return Response({"error": "Multiple shelters found for this user"}, status=status.HTTP_400_BAD_REQUEST)
+
 class ShelterRequestViewSet(viewsets.ModelViewSet):
     queryset = ShelterRequest.objects.all()
     serializer_class = ShelterRequestSerializer
