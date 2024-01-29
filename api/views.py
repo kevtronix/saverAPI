@@ -124,3 +124,15 @@ class ShelterRequestViewSet(viewsets.ModelViewSet):
         not_delivered_requests = ShelterRequest.objects.filter(delivered=False, fulfilled=True)
         serializer = ShelterRequestSerializer(not_delivered_requests, many=True)
         return Response(serializer.data)
+
+
+    # Deliver request
+    @action(detail=True, methods=['post'])
+    def deliver_request(self, request, pk=None):
+        try:
+            request = ShelterRequest.objects.get(id=pk)
+            request.delivered = True
+            request.save()
+            return Response({'status': 'Request delivered'})
+        except:
+            return Response({'status': 'Request not found'})
