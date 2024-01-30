@@ -118,10 +118,40 @@ class FoodInspectorViewSet(viewsets.ModelViewSet):
     queryset = FoodInspector.objects.all()
     serializer_class = FoodInspectorSerializer
 
+    # Get food inspector based on user token
+    @action(detail=False, methods=['get'])
+    def get_my_food_inspector(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+        try:
+            food_inspector = FoodInspector.objects.get(user=user)
+            serializer = self.get_serializer(food_inspector)
+            return Response(serializer.data)
+        except FoodInspector.DoesNotExist:
+            return Response({'error': 'Food inspector not found for this user'}, status=status.HTTP_404_NOT_FOUND)
+        except FoodInspector.MultipleObjectsReturned:
+            return Response({'error': 'Multiple food inspectors found for this user'}, status=status.HTTP_400_BAD_REQUEST)
+
 
 class VolunteerViewSet(viewsets.ModelViewSet):
     queryset = Volunteer.objects.all()
     serializer_class = VolunteerSerializer
+
+    # Get volunteer based on user token
+    @action(detail=False, methods=['get'])
+    def get_my_volunteer(self, request):
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+        try:
+            volunteer = Volunteer.objects.get(user=user)
+            serializer = self.get_serializer(volunteer)
+            return Response(serializer.data)
+        except Volunteer.DoesNotExist:
+            return Response({'error': 'Volunteer not found for this user'}, status=status.HTTP_404_NOT_FOUND)
+        except Volunteer.MultipleObjectsReturned:
+            return Response({'error': 'Multiple volunteers found for this user'}, status=status.HTTP_400_BAD_REQUEST)
 
 class ShelterViewSet(viewsets.ModelViewSet):
     queryset = Shelter.objects.all()
