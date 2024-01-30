@@ -146,6 +146,13 @@ class ShelterRequestViewSet(viewsets.ModelViewSet):
     queryset = ShelterRequest.objects.all()
     serializer_class = ShelterRequestSerializer
 
+    # Show all not fufilled requests
+    @action(detail=False, methods=['get'])
+    def list_not_fulfilled_requests(self, request):
+        not_fulfilled_requests = ShelterRequest.objects.filter(fulfilled=False)
+        serializer = ShelterRequestSerializer(not_fulfilled_requests, many=True)
+        return Response(serializer.data)
+
     # Show all not delivered requests
     @action(detail=False, methods=['get'])
     def list_not_delivered_requests(self, request):
