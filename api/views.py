@@ -131,10 +131,8 @@ class ShelterViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     def get_my_shelter(self, request):
         user = request.user
-
         if not user.is_authenticated:
-            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
-
+            return Response({'error': 'User not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
         try:
             shelter = Shelter.objects.get(user=user)
             serializer = self.get_serializer(shelter)
