@@ -64,6 +64,17 @@ class TicketViewSet(viewsets.ModelViewSet):
         except:
             return Response({'status': 'Ticket not found'})
     
+    # Uncheck Ticket
+    @action(detail=True, methods=['post'])
+    def uncheck_ticket(self, request, pk=None):
+        try:
+            ticket = Ticket.objects.get(id=pk)
+            ticket.checked = False
+            ticket.save()
+            return Response({'status': 'Ticket unchecked'})
+        except:
+            return Response({'status': 'Ticket not found'})
+    
     # Adjust quantity of food
     @action(detail=True, methods=['post'])
     def adjust_quantity(self, request, pk=None):
