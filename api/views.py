@@ -27,21 +27,21 @@ class TicketViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     # Show all unchecked tickets
     def list_unchecked_tickets(self, request):
-        unchecked_tickets = Ticket.objects.filter(checked=False, quantity__gt=0, expiration_date__gte=date.today())
+        unchecked_tickets = Ticket.objects.filter(checked=False, quantity__gt=0, expiration_date__gte=date.today()).order_by('expiration_date')
         serializer = TicketSerializer(unchecked_tickets, many=True)
         return Response(serializer.data)
 
     @action(detail=False, methods=['get'])
     # Show all checked tickets 
     def list_checked_tickets(self, request):
-        checked_tickets = Ticket.objects.filter(checked=True, quantity__gt=0, expiration_date__gte=date.today())
+        checked_tickets = Ticket.objects.filter(checked=True, quantity__gt=0, expiration_date__gte=date.today()).order_by('expiration_date')
         serializer = TicketSerializer(checked_tickets, many=True)
         return Response(serializer.data)
     
     # Show all expired tickets 
     @action(detail=False, methods=['get'])
     def list_expired_tickets(self, request):
-        expired_tickets = Ticket.objects.filter(expiration_date__lt=date.today(), quantity__gt=0)
+        expired_tickets = Ticket.objects.filter(expiration_date__lt=date.today(), quantity__gt=0).order_by('expiration_date')
         serializer = TicketSerializer(expired_tickets, many=True)
         return Response(serializer.data)
 
@@ -149,14 +149,14 @@ class ShelterRequestViewSet(viewsets.ModelViewSet):
     # Show all not fufilled requests
     @action(detail=False, methods=['get'])
     def list_not_fulfilled_requests(self, request):
-        not_fulfilled_requests = ShelterRequest.objects.filter(fulfilled=False, delivered=False)
+        not_fulfilled_requests = ShelterRequest.objects.filter(fulfilled=False, delivered=False).order_by('quantity_requested')
         serializer = ShelterRequestSerializer(not_fulfilled_requests, many=True)
         return Response(serializer.data)
 
     # Show all not delivered requests
     @action(detail=False, methods=['get'])
     def list_not_delivered_requests(self, request):
-        not_delivered_requests = ShelterRequest.objects.filter(delivered=False, fulfilled=True)
+        not_delivered_requests = ShelterRequest.objects.filter(delivered=False, fulfilled=True).order_by('quantity_requested')
         serializer = ShelterRequestSerializer(not_delivered_requests, many=True)
         return Response(serializer.data)
 
