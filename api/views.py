@@ -7,6 +7,7 @@ from .serializers import RestaurantSerializer, TicketSerializer, FoodInspectorSe
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from .matching import match_checked_tickets_with_requests
+from datetime import date
 
 class IsSuperUser(permissions.BasePermission):
     def has_permission(self, request, view):
