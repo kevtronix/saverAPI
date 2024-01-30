@@ -7,6 +7,7 @@ from .serializers import RestaurantSerializer, TicketSerializer, FoodInspectorSe
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import permissions
 from .matching import match_checked_tickets_with_requests
+from rest_framework import status
 from datetime import date
 
 class IsSuperUser(permissions.BasePermission):
@@ -114,18 +115,23 @@ class VolunteerViewSet(viewsets.ModelViewSet):
 class ShelterViewSet(viewsets.ModelViewSet):
     queryset = Shelter.objects.all()
     serializer_class = ShelterSerializer
-
+ 
+    # Custom action to get shelter based on user token
     @action(detail=False, methods=['get'])
-    def get_shelter(self, request):
+    def get_my_shelter(self, request):
         user = request.user
+
+        if not user.is_authenticated:
+            return Response({'error': 'User is not authenticated'}, status=status.HTTP_401_UNAUTHORIZED)
+
         try:
             shelter = Shelter.objects.get(user=user)
-            serializer = ShelterSerializer(shelter)
+            serializer = self.get_serializer(shelter)
             return Response(serializer.data)
         except Shelter.DoesNotExist:
-            return Response({"error": "Shelter not found"}, status=status.HTTP_404_NOT_FOUND)
+            return Response({'error': 'Shelter not found for this user'}, status=status.HTTP_404_NOT_FOUND)
         except Shelter.MultipleObjectsReturned:
-            return Response({"error": "Multiple shelters found for this user"}, status=status.HTTP_400_BAD_REQUEST)
+            return Response({'error': 'Multiple shelters found for this user'}, status=status.HTTP_400_BAD_REQUEST)
 
 class ShelterRequestViewSet(viewsets.ModelViewSet):
     queryset = ShelterRequest.objects.all()
