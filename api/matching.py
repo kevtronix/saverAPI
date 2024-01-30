@@ -12,7 +12,10 @@ def match_checked_tickets_with_requests():
         ).order_by('-quantity')  # Optional: Order by quantity to use bigger tickets first
 
         for ticket in matching_tickets:
+          
             if remaining_quantity <= 0:
+                request.fulfilled = True
+                request.save()
                 break  # Request is fully fulfilled
 
             if ticket.quantity <= remaining_quantity:
