@@ -17,7 +17,7 @@ class Restaurant(models.Model):
 class Ticket(models.Model):
     # Food Category Choices 
     FOOD_CATEGORY_CHOICES = [
-        (0, 'Meats'),
+        (0, 'Canned Foods'),
         (1, 'Vegetables'),
         (2, 'Non-Perishables'),
     ]
@@ -97,7 +97,7 @@ class Shelter(models.Model):
 class ShelterRequest(models.Model):
   # Food Category Choices 
     FOOD_CATEGORY_CHOICES = [
-        (0, 'Meats'),
+        (0, 'Canned Foods'),
         (1, 'Vegetables'),
         (2, 'Non-Perishables'),
     ]
