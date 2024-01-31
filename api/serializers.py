@@ -30,6 +30,7 @@ class RestaurantSerializer(serializers.ModelSerializer):
 
 class TicketSerializer(serializers.ModelSerializer):
     restaurant = RestaurantSerializer(read_only=True)
+    food_category_display = serializers.SerializerMethodField()
     
     class Meta:
         model = Ticket
@@ -93,6 +94,7 @@ class ShelterSerializer(serializers.ModelSerializer):
 class ShelterRequestSerializer(serializers.ModelSerializer):
     shelter = ShelterSerializer(read_only=True)
     tickets = TicketSerializer(many=True, read_only=True)
+    food_category_display = serializers.SerializerMethodField()
 
     class Meta:
         model = ShelterRequest
@@ -108,5 +110,5 @@ class ShelterRequestSerializer(serializers.ModelSerializer):
         shelter_request = ShelterRequest.objects.create(shelter=shelter, **validated_data)
         return shelter_request
     
-    def food_catego4ry_display(self, obj):
+    def food_category_display(self, obj):
         return obj.get_food_category_display()
