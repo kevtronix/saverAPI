@@ -23,7 +23,6 @@ class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
 
-
     @action(detail=False, methods=['get'])
     # Show all unchecked tickets
     def list_unchecked_tickets(self, request):
@@ -132,6 +131,9 @@ class FoodInspectorViewSet(viewsets.ModelViewSet):
             return Response({'error': 'Food inspector not found for this user'}, status=status.HTTP_404_NOT_FOUND)
         except FoodInspector.MultipleObjectsReturned:
             return Response({'error': 'Multiple food inspectors found for this user'}, status=status.HTTP_400_BAD_REQUEST)
+        
+    
+    
 
 
 class VolunteerViewSet(viewsets.ModelViewSet):

@@ -43,6 +43,9 @@ class TicketSerializer(serializers.ModelSerializer):
         # Create a new Ticket instance
         ticket = Ticket.objects.create(restaurant=restaurant, **validated_data)
         return ticket
+    
+    def food_category_display(self, obj):
+        return obj.get_food_category_display()
 
 
 
@@ -104,3 +107,6 @@ class ShelterRequestSerializer(serializers.ModelSerializer):
         # Create a new ShelterRequest instance
         shelter_request = ShelterRequest.objects.create(shelter=shelter, **validated_data)
         return shelter_request
+    
+    def food_catego4ry_display(self, obj):
+        return obj.get_food_category_display()
