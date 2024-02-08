@@ -113,4 +113,13 @@ class ShelterRequest(models.Model):
         return self.shelter.name + " " + self.ticket.restaurant.name + " " + self.ticket.get_food_category_display() + " " + self.ticket.expiration_date.strftime("%m/%d/%Y") + " " + str(self.ticket.checked)
 
 
-    
+class Organizer (models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
+    first_name = models.CharField(max_length=200)
+    last_name = models.CharField(max_length=200)
+    phone_number = models.CharField(max_length=200)
+    email = models.CharField(max_length=200)
+
+
+    def __str__(self):
+        return f'{self.first_name} {self.last_name}' 
