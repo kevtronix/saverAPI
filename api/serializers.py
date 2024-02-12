@@ -27,16 +27,8 @@ class RestaurantSerializer(serializers.ModelSerializer):
         user = UserSerializer.create(UserSerializer(), validated_data=user_data)
         restaurant = Restaurant.objects.create(user=user, **validated_data)
 
-        # Assign the user as the owner of the restaurant
-        assign_perm('view_restaurant', user, restaurant)
-        assign_perm('change_restaurant', user, restaurant)
-        assign_perm('delete_restaurant', user, restaurant)
-
-        # Assign the organizer control over the restaurant
-        for organizer in Organizer.objects.all():
-            assign_perm('view_restaurant', organizer.user, restaurant)
-            assign_perm('change_restaurant', organizer.user, restaurant)
-            assign_perm('delete_restaurant', organizer.user, restaurant)
+        assign_perm('api.restaurant', user)
+        
         
         return restaurant
 
@@ -56,18 +48,7 @@ class TicketSerializer(serializers.ModelSerializer):
         # Create a new Ticket instance
         ticket = Ticket.objects.create(restaurant=restaurant, **validated_data)
 
-        # Assign the user as the owner of the ticket
-        assign_perm('view_ticket', ticket.restaurant.user, ticket)
-        assign_perm('change_ticket', ticket.restaurant.user, ticket)
-        assign_perm('delete_ticket', ticket.restaurant.user, ticket)
 
-        # Assign the organizer control over the ticket
-        for organizer in Organizer.objects.all():
-            assign_perm('view_ticket', organizer.user, ticket)
-            assign_perm('change_ticket', organizer.user, ticket)
-            assign_perm('delete_ticket', organizer.user, ticket)
-        
-        # Allow the food inspector to view the ticket and mark it as checked
         
         return ticket
     
@@ -88,18 +69,10 @@ class FoodInspectorSerializer(serializers.ModelSerializer):
         user = UserSerializer.create(UserSerializer(), validated_data=user_data)
         food_inspector = FoodInspector.objects.create(user=user, **validated_data)
 
-
-        # Assign the user as the owner of the food inspector
-        assign_perm('view_foodinspector', user, food_inspector)
-        assign_perm('change_foodinspector', user, food_inspector)
-        assign_perm('delete_foodinspector', user, food_inspector)
+        assign_perm('api.inspector', user)
 
 
-        # Assign the organizer control over the food inspector
-        for organizer in Organizer.objects.all():
-            assign_perm('view_foodinspector', organizer.user, food_inspector)
-            assign_perm('change_foodinspector', organizer.user, food_inspector)
-            assign_perm('delete_foodinspector', organizer.user, food_inspector)
+   
 
         return food_inspector
 
@@ -115,18 +88,11 @@ class VolunteerSerializer(serializers.ModelSerializer):
         user = UserSerializer.create(UserSerializer(), validated_data=user_data)
         volunteer = Volunteer.objects.create(user=user, **validated_data)
 
+        assign_perm('api.volunteer', user)
 
-        # Assign the user as the owner of the volunteer
-        assign_perm('view_volunteer', user, volunteer)
-        assign_perm('change_volunteer', user, volunteer)
-        assign_perm('delete_volunteer', user, volunteer)
 
-        # Assign the organizer control over the volunteer
-        for organizer in Organizer.objects.all():
-            assign_perm('view_volunteer', organizer.user, volunteer)
-            assign_perm('change_volunteer', organizer.user, volunteer)
-            assign_perm('delete_volunteer', organizer.user, volunteer)
-        
+
+       
         return volunteer
 
 class ShelterSerializer(serializers.ModelSerializer):
@@ -141,16 +107,9 @@ class ShelterSerializer(serializers.ModelSerializer):
         user = UserSerializer.create(UserSerializer(), validated_data=user_data)
         shelter = Shelter.objects.create(user=user, **validated_data)
 
-        # Assign the user as the owner of the shelter
-        assign_perm('view_shelter', user, shelter)
-        assign_perm('change_shelter', user, shelter)
-        assign_perm('delete_shelter', user, shelter)
+        # Assign shelter permission to this 
+        assign_perm('api.shelter', user)
 
-        # Assign the organizer control over the shelter
-        for organizer in Organizer.objects.all():
-            assign_perm('view_shelter', organizer.user, shelter)
-            assign_perm('change_shelter', organizer.user, shelter)
-            assign_perm('delete_shelter', organizer.user, shelter)
         return shelter
      
 
@@ -173,16 +132,7 @@ class ShelterRequestSerializer(serializers.ModelSerializer):
         # Create a new ShelterRequest instance
         shelter_request = ShelterRequest.objects.create(shelter=shelter, **validated_data)
 
-        # Assign the user as the owner of the shelter request
-        assign_perm('view_shelterrequest', shelter.user, shelter_request)
-        assign_perm('change_shelterrequest', shelter.user, shelter_request)
-        assign_perm('delete_shelterrequest', shelter.user, shelter_request)
 
-        # Assign the organizer control over the shelter request
-        for organizer in Organizer.objects.all():
-            assign_perm('view_shelterrequest', organizer.user, shelter_request)
-            assign_perm('change_shelterrequest', organizer.user, shelter_request)
-            assign_perm('delete_shelterrequest', organizer.user, shelter_request)
         
         
         return shelter_request
@@ -203,4 +153,8 @@ class OrganizerSerializer(serializers.ModelSerializer):
         user_data = validated_data.pop('user')
         user = UserSerializer.create(UserSerializer(), validated_data=user_data)
         organizer = Organizer.objects.create(user=user, **validated_data)
+       
+        assign_perm('api.organizer', user)
+
+
         return organizer

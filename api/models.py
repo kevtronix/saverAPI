@@ -4,6 +4,11 @@ from django.contrib.auth.models import User
 
 # Create your models here.
 class Restaurant(models.Model):
+    class Meta: 
+        permissions = (
+            ('restaurant', 'Can manage restaurant'),
+        )
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     name = models.CharField(max_length=200)
     email = models.CharField(max_length=200)
@@ -15,6 +20,7 @@ class Restaurant(models.Model):
         return self.name
 
 class Ticket(models.Model):
+  
     # Food Category Choices 
     FOOD_CATEGORY_CHOICES = [
         (0, 'Canned Foods'),
@@ -49,6 +55,11 @@ class Ticket(models.Model):
 
 
 class FoodInspector(models.Model):
+    class Meta: 
+        permissions = (
+            ('inspector', 'Food Inspector'),
+        )
+    
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
@@ -72,6 +83,11 @@ class FoodInspector(models.Model):
 
 
 class Volunteer(models.Model):
+    class Meta: 
+        permissions = (
+            ('volunteer', 'Volunteer'),
+        )
+ 
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
@@ -84,6 +100,11 @@ class Volunteer(models.Model):
 
 
 class Shelter(models.Model):
+    class Meta: 
+        permissions = (
+            ('shelter', 'Shelter'),
+        )
+
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     name = models.CharField(max_length=200)
     address = models.CharField(max_length=200)
@@ -95,6 +116,7 @@ class Shelter(models.Model):
 
 
 class ShelterRequest(models.Model):
+ 
   # Food Category Choices 
     FOOD_CATEGORY_CHOICES = [
         (0, 'Canned Foods'),
@@ -114,12 +136,16 @@ class ShelterRequest(models.Model):
 
 
 class Organizer (models.Model):
+    class Meta: 
+        permissions = ( 
+            ('organizer', 'Organizer'),
+       ) 
+   
     user = models.OneToOneField(User, on_delete=models.CASCADE, default=None)
     first_name = models.CharField(max_length=200)
     last_name = models.CharField(max_length=200)
     phone_number = models.CharField(max_length=200)
     email = models.CharField(max_length=200)
-
 
     def __str__(self):
         return f'{self.first_name} {self.last_name}' 
