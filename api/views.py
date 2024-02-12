@@ -9,7 +9,7 @@ from .matching import match_checked_tickets_with_requests
 from rest_framework import status
 from datetime import date
 
-from .permissions import CustomObjectPermissions, IsSpecialist, IsVolunteer, IsOrganizer
+from .permissions import IsRestaurant, IsShelter, IsFoodInspector, IsVolunteer, IsOrganizer 
     
 class RestaurantSignupAPIView(APIView):
     # Allow any user (authenticated or not) to access this view
@@ -25,15 +25,15 @@ class RestaurantSignupAPIView(APIView):
 class RestaurantViewSet(viewsets.ModelViewSet):
     queryset = Restaurant.objects.all()
     serializer_class = RestaurantSerializer
-    permission_classes = [CustomObjectPermissions]
+    permission_classes = [IsRestaurant]
 
 
 class TicketViewSet(viewsets.ModelViewSet):
     queryset = Ticket.objects.all()
     serializer_class = TicketSerializer
-    permission_classes = [CustomObjectPermissions]
+    permission_classes = [IsOrganizer]
 
-    @action(detail=False, methods=['get'], permission_classes=[IsSpecialist])
+    @action(detail=False, methods=['get'], permission_classes=[IsFoodInspector])
     # Show all unchecked tickets
     def list_unchecked_tickets(self, request):
         unchecked_tickets = Ticket.objects.filter(checked=False, quantity__gt=0, expiration_date__gte=date.today()).order_by('expiration_date')
@@ -43,7 +43,7 @@ class TicketViewSet(viewsets.ModelViewSet):
     @action(detail=False, methods=['get'])
     # Show all checked tickets 
     def list_checked_tickets(self, request):
-        checked_tickets = Ticket.objects.filter(check:wed=True, quantity__gt=0, expiration_date__gte=date.today()).order_by('expiration_date')
+        checked_tickets = Ticket.objects.filter(checked=True, quantity__gt=0, expiration_date__gte=date.today()).order_by('expiration_date')
         serializer = TicketSerializer(checked_tickets, many=True)
         return Response(serializer.data)
     
@@ -63,7 +63,7 @@ class TicketViewSet(viewsets.ModelViewSet):
         return Response({'status': str(count) + ' expired tickets deleted'})
     
     # Check Ticket 
-    @action(detail=True, methods=['post'], permission_classes=[IsSpecialist])
+    @action(detail=True, methods=['post'], permission_classes=[IsFoodInspector])
     def check_ticket(self, request, pk=None):
         try:
             ticket = Ticket.objects.get(id=pk)
@@ -74,7 +74,7 @@ class TicketViewSet(viewsets.ModelViewSet):
             return Response({'status': 'Ticket not found'})
     
     # Uncheck Ticket
-    @action(detail=True, methods=['post'], permission_classes=[IsSpecialist])
+    @action(detail=True, methods=['post'], permission_classes=[IsFoodInspector])
     def uncheck_ticket(self, request, pk=None):
         try:
             ticket = Ticket.objects.get(id=pk)
@@ -108,7 +108,7 @@ class TicketViewSet(viewsets.ModelViewSet):
 
 class UserRestaurantsViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = RestaurantSerializer
-    permission_classes = [CustomObjectPermissions]
+    permission_classes = [IsRestaurant]
 
     def get_queryset(self):
         user = self.request.user
@@ -118,7 +118,7 @@ class UserRestaurantsViewSet(viewsets.ReadOnlyModelViewSet):
 
 class UserShelterViewSet(viewsets.ReadOnlyModelViewSet):
     serializer_class = ShelterSerializer
-    permission_classes = [CustomObjectPermissions]
+    permission_classes = [IsShelter]
 
     def get_queryset(self):
         user = self.request.user
@@ -139,7 +139,7 @@ class FoodInspectorSignupAPIView(APIView):
 class FoodInspectorViewSet(viewsets.ModelViewSet):
     queryset = FoodInspector.objects.all()
     serializer_class = FoodInspectorSerializer
-    permission_classes = [CustomObjectPermissions]
+    permission_classes = [IsFoodInspector]
 
     # Get food inspector based on user token
     @action(detail=False, methods=['get'])
@@ -171,7 +171,7 @@ class VolunteerSignupAPIView(APIView):
 class VolunteerViewSet(viewsets.ModelViewSet):
     queryset = Volunteer.objects.all()
     serializer_class = VolunteerSerializer
-    permission_classes = [CustomObjectPermissions]
+    permission_classes = [IsVolunteer]
 
     # Get volunteer based on user token
     @action(detail=False, methods=['get'])
@@ -203,7 +203,7 @@ class ShelterSignupAPIView(APIView):
 class ShelterViewSet(viewsets.ModelViewSet):
     queryset = Shelter.objects.all()
     serializer_class = ShelterSerializer
-    permission_classes = [CustomObjectPermissions]
+    permission_classes = [IsShelter]
  
     # Custom action to get shelter based on user token
     @action(detail=False, methods=['get'])
@@ -223,10 +223,10 @@ class ShelterViewSet(viewsets.ModelViewSet):
 class ShelterRequestViewSet(viewsets.ModelViewSet):
     queryset = ShelterRequest.objects.all()
     serializer_class = ShelterRequestSerializer
-    permission_classes = [CustomObjectPermissions]
+    permission_classes = [IsOrganizer]
 
     # Show all not fufilled requests
-    @action(detail=False, methods=['get'], permission_classes=[IsOrganizer])
+    @action(detail=False, methods=['get'])
     def list_not_fulfilled_requests(self, request):
         not_fulfilled_requests = ShelterRequest.objects.filter(fulfilled=False, delivered=False).order_by('quantity_requested')
         serializer = ShelterRequestSerializer(not_fulfilled_requests, many=True)
@@ -266,7 +266,7 @@ class OrganizerSignupAPIView(APIView):
 class OrganizerViewSet(viewsets.ModelViewSet):
     queryset = Organizer.objects.all()
     serializer_class = OrganizerSerializer
-    permission_classes = [CustomObjectPermissions]
+    permission_classes = [IsOrganizer]
 
     # Get organizer based on user token
     @action(detail=False, methods=['get'])
